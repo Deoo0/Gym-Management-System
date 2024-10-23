@@ -16,46 +16,45 @@ if ($conn->connect_error) {
 // Get member ID from request
 $memberId = $_GET['memberId']; // Get the member ID from the query parameter
 
-// Prepare and execute SQL query to join 'registration_info' and 'members'
+/// Prepare and execute SQL query to find the most recent valid membership
 $sql = "
-    SELECT registration_info.end_date, members.firstname, members.middlename, members.lastname
-    FROM registration_info
-    JOIN members ON registration_info.member_id = members.id
-    WHERE registration_info.member_id = ?
+SELECT registration_info.end_date, registration_info.date_created, registration_info.status, 
+members.firstname, members.middlename, members.lastname
+FROM registration_info
+JOIN members ON registration_info.member_id = members.id
+WHERE registration_info.member_id = ? 
+AND registration_info.status = 1
+AND registration_info.end_date > NOW()
+ORDER BY registration_info.end_date DESC
+LIMIT 1
 ";
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $memberId);
+$stmt->bind_param("s", $memberId);  // Bind the memberId from the URL or request
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Check if a valid member was found
+// Check if a valid membership was found
 if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $expiryDate = $row['end_date'];
-    $firstName = $row['firstname'];
-    $middleName = $row['middlename'];
-    $lastName = $row['lastname'];
-    $fullName = "$firstName $middleName $lastName"; // Concatenate the name
+$row = $result->fetch_assoc();
+$expiryDate = $row['end_date'];
+$firstName = $row['firstname'] ?? 'Unknown';
+$middleName = $row['middlename'] ?? ''; // If no middle name, default to empty string
+$lastName = $row['lastname'] ?? 'Unknown';
+$fullName = "$firstName $middleName $lastName"; // Concatenate the name
 
-    // Check if the membership is still valid
-    if (strtotime($expiryDate) > time()) {
-        echo json_encode([
-            "valid" => true, 
-            "expiry" => $expiryDate, 
-            "name" => $fullName // Include member's full name
-        ]);
-    } else {
-        echo json_encode([
-            "valid" => false, 
-            "message" => "Membership expired.",
-            "name" => $fullName // Include member's full name even if expired
-        ]);
-    }
+// Return the valid membership
+echo json_encode([
+    "valid" => true, 
+    "expiry" => $expiryDate, 
+    "name" => $fullName
+]);
 } else {
-    echo json_encode([
-        "valid" => false, 
-        "message" => "Member not found."
-    ]);
+// No valid memberships found
+echo json_encode([
+    "valid" => false, 
+    "message" => "No valid membership found."
+]);
 }
 
 // Close connection
