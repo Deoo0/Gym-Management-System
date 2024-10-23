@@ -1660,7 +1660,7 @@ main#view-panel{
     top: 3.5rem;
 }
 main#main {
-    /*margin-top: 8rem;*/
+    margin-top: 8rem;
 }
 main#main.login {
     margin-top: unset;
@@ -1729,3 +1729,4 @@ span.select2-selection.select2-selection--single {
 }
 span.select2-selection__arrow {
     top: .3rem !important;
+}
