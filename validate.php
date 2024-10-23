@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "gym_phase2_qr_db";
+$dbname = "gym_db";
 
 
 // Create connection
@@ -18,7 +18,7 @@ if ($conn->connect_error) {
 $memberId = $_GET['memberId']; // Get the member ID from the query parameter
 
 // Prepare and execute SQL query
-$sql = "SELECT membership_expiry FROM gym_members WHERE qr_code = ?";
+$sql = "SELECT end_date FROM registration_info WHERE member_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $memberId);
 $stmt->execute();
@@ -27,7 +27,7 @@ $result = $stmt->get_result();
 // Check if a valid member was found
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $expiryDate = $row['membership_expiry'];
+    $expiryDate = $row['end_date'];
     
     // Check if the membership is still valid
     if (strtotime($expiryDate) > time()) {
