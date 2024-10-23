@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Scanner</title>
+    <script src="html5-qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>QR Code Scanner</h1>
+    <div id="reader"></div>
+    <div id="result"></div>
+    <button id="startBtn">Start Scanning</button>
+    <button id="stopBtn">Stop Scanning</button>
+
+    <script>
+      let html5QrCode = new Html5Qrcode("reader"); // Initialize outside for scope
+      let isScanning = false;
+
+      // Start scanning
+      function startScanning() {
+        if (!isScanning) {
+          // Dynamically set qrbox size to match the video feed aspect ratio
+          let aspectRatio = 600 / 400; // Example: adjust to match your camera feed ratio
+          let qrboxSize = {
+            width: 300, // Set this value based on your requirements
+            height: 500 / aspectRatio, // Ensuring it matches the aspect ratio of the video feed
+          };
+          html5QrCode
+            .start(
+              { facingMode: "environment" }, // Use the environment camera
+              {
+                fps: 10, // Frames per second
+                qrbox: qrboxSize, // Set the scanning box size
+              },
+              qrCodeSuccessCallback,
+              (errorMessage) => {
+                // Handle scanning errors
+                console.warn(`QR code scan error: ${errorMessage}`);
+                document.getElementById("result").innerText = "Scanning.....";
+              }
+            )
+            .then(() => {
+              isScanning = true;
+              console.log("Scanning started...");
+            })
+            .catch((err) => {
+              console.error("Failed to start scanning:", err);
+              alert(
+                "Error starting the scanner. Please check camera permissions."
+              );
+            });
+        }
+      }
+
+      // Stop scanning
+      function stopScanning() {
+        if (isScanning) {
+          html5QrCode
+            .stop()
+            .then(() => {
+              isScanning = false;
+              console.log("Scanning stopped.");
+              document.getElementById("result").innerText = "Scanning stopped.";
+            })
+            .catch((err) => {
+              console.error("Failed to stop scanning:", err);
+              alert("Error stopping the scanner.");
+            });
+        }
+      }
+
+      // Handle QR code success
+      const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+        document.getElementById(
+          "result"
+        ).innerText = `QR Code scanned: ${decodedText}`;
+        validateMembership(decodedText); // Call your validation logic
+      };
+
+      // Validate membership
+      function validateMembership(memberId) {
+        fetch(`validate.php?memberId=${memberId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.valid) {
+              alert(`Membership is valid. Expiry Date: ${data.expiry}`);
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error during validation:", error);
+            alert("An error occurred while validating the membership.");
+          });
+      }
+
+      // Add event listeners for start and stop buttons
+      document
+        .getElementById("startBtn")
+        .addEventListener("click", startScanning);
+      document
+        .getElementById("stopBtn")
+        .addEventListener("click", stopScanning);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Generate Gym Member QR Code</h1>
+    <div id="qrcode"></div>
+    <button id="downloadBtn">Download QR Code</button>
+
+    <script>
+      // Data to encode in the QR code (e.g., gym member ID)
+      let memberId = "GYM123457";
+
+      // Generate QR code
+      let qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: memberId,
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff", // White background
+        correctLevel: QRCode.CorrectLevel.H, // High correction level
+      });
+
+      // Function to download the QR code as an image
+      function downloadQR() {
+        let canvas = document.querySelector("#qrcode canvas"); // Get the canvas element
+        let image = canvas.toDataURL("image/png"); // Convert canvas to image data
+
+        let link = document.createElement("a");
+        link.href = image;
+        link.download = "gym_member_qr.png"; // File name for download
+        link.click();
+      }
+
+      // Add event listener to the download button
+      document
+        .getElementById("downloadBtn")
+        .addEventListener("click", downloadQR);
+    </script>
+  </body>
+</html>
