@@ -86,9 +86,16 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.valid) {
-              alert(`Membership is valid. Expiry Date: ${data.expiry}`);
+              // Show both the member's name and the expiry date
+              alert(
+                `Membership is valid. Name: ${data.name}, Expiry Date: ${data.expiry}`
+              );
+              document.getElementById(
+                "result"
+              ).innerText = `Member: ${data.name}, Expiry Date: ${data.expiry}`;
             } else {
               alert(data.message);
+              document.getElementById("result").innerText = data.message;
             }
           })
           .catch((error) => {
