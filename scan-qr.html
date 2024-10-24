@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div id="notif"></div>
     <h1>QR Code Scanner</h1>
     <h2>Olympic Fitness Gym</h2>
     <div id="reader"></div>
     <div id="result"></div>
     <button id="startBtn">Start Scanning</button>
-    <button id="stopBtn">Stop Scanning</button>
 
     <script>
       let html5QrCode = new Html5Qrcode("reader"); // Initialize outside for scope
@@ -79,6 +79,20 @@
         ).innerText = `QR Code scanned: ${decodedText}`;
         validateMembership(decodedText); // Call your validation logic
       };
+      function notif(data) {
+        var notif = document.getElementById("reader");
+        var formdata = new FormData();
+        formdata.append("notif", data);
+        fetch("noti.php", {
+          method: "POST",
+          body: formdata,
+        })
+          .then((responce) => responce.text())
+          .then((data) => {
+            notif.innerHTML = data;
+          });
+        return false;
+      }
 
       // Validate membership
       function validateMembership(memberId) {
@@ -87,30 +101,29 @@
           .then((data) => {
             if (data.valid) {
               // Show both the member's name and the expiry date
-              alert(
-                `Membership is valid. Name: ${data.name}, Expiry Date: ${data.expiry}`
-              );
+              notif("Membership Valid");
               document.getElementById(
                 "result"
               ).innerText = `Member: ${data.name}, Expiry Date: ${data.expiry}`;
             } else {
-              alert(data.message);
-              document.getElementById("result").innerText = data.message;
+              notif("Membership Expired");
+              document.getElementById(
+                "result"
+              ).innerText = `Member: ${data.name}, Expiry Date: ${data.expiry}`;
             }
           })
           .catch((error) => {
             console.error("Error during validation:", error);
-            alert("An error occurred while validating the membership.");
+            notif("member not found");
           });
+
+        stopScanning();
       }
 
       // Add event listeners for start and stop buttons
       document
         .getElementById("startBtn")
         .addEventListener("click", startScanning);
-      document
-        .getElementById("stopBtn")
-        .addEventListener("click", stopScanning);
     </script>
   </body>
 </html>
