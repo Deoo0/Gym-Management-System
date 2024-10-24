@@ -10,4 +10,17 @@
     echo $display;
 ?>
 
+<style>
+    #container{
+        height: 410px;
+        background-color: green;
+        align-content: center;
+    }
+    #text-content{
+        color: black;
+        text-align: center;
+        font-weight: bold;
+        font-size: 30px;
 
+    }
+</style>
