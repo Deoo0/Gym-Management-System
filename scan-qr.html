@@ -87,7 +87,7 @@
           method: "POST",
           body: formdata,
         })
-          .then((responce) => responce.text())
+          .then((response) => response.text())
           .then((data) => {
             notif.innerHTML = data;
           });
