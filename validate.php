@@ -30,7 +30,7 @@ LIMIT 1
 ";
 
 $sql2 = "
-SELECT registration_info.end_date, registration_info.date_created, registration_info.status, 
+SELECT registration_info.end_date, registration_info.date_created, registration_info.status, members.member_id,
 members.firstname, members.middlename, members.lastname
 FROM registration_info
 JOIN members ON registration_info.member_id = members.id

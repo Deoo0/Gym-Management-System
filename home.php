@@ -214,12 +214,12 @@
               notif("Membership Valid");
               document.getElementById(
                 "result"
-              ).innerText = `Member: ${data.name}\n Expiry Date: ${data.expiry}\n Member ID: ${data.memberId}`;
+              ).innerText = `Member: ${data.name}\n Expiry Date: ${data.expiry}\n Member ID: ${data.id}\n\nENJOY YOUR WORKOUT 💪`;
             } else {
               notifred("Membership Expired");
               document.getElementById(
                 "result"
-              ).innerText = `Member: ${data.name}\n Expiry Date: ${data.expiry}\n Member ID: ${data.memberId}`;
+              ).innerText = `Member: ${data.name}\n Expiry Date: ${data.expiry}\n Member ID: ${data.id}\n\nNeed to Renew Your Membership 💪`;
             }
           })
           .catch((error) => {
