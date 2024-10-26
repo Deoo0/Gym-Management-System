@@ -94,6 +94,21 @@
         return false;
       }
 
+      function notifred(data) {
+        var notif = document.getElementById("reader");
+        var formdata = new FormData();
+        formdata.append("notif", data);
+        fetch("noti-red.php", {
+          method: "POST",
+          body: formdata,
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            notif.innerHTML = data;
+          });
+        return false;
+      }
+
       // Validate membership
       function validateMembership(memberId) {
         fetch(`validate.php?memberId=${memberId}`)
@@ -106,7 +121,7 @@
                 "result"
               ).innerText = `Member: ${data.name}, Expiry Date: ${data.expiry}`;
             } else {
-              notif("Membership Expired");
+              notifred("Membership Expired");
               document.getElementById(
                 "result"
               ).innerText = `Member: ${data.name}, Expiry Date: ${data.expiry}`;
