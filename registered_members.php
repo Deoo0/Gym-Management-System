@@ -83,7 +83,7 @@
 										<?php if(strtotime(date('Y-m-d')) <= strtotime($row['end_date'])): ?>
 										<span class="badge badge-success">Active</span>
 										<?php else: ?>
-										<span class="badge badge-danger">Exprired</span>
+										<span class="badge badge-danger">Expired</span>
 										<?php endif; ?>
 									</td>
 									<td class="text-center">
