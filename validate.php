@@ -18,7 +18,7 @@ $memberId = $_GET['memberId']; // Get the member ID from the query parameter
 
 /// Prepare and execute SQL query to find the most recent valid membership
 $sql = "
-SELECT registration_info.end_date, registration_info.date_created, registration_info.status, 
+SELECT registration_info.end_date, registration_info.date_created, registration_info.status, members.member_id, 
 members.firstname, members.middlename, members.lastname
 FROM registration_info
 JOIN members ON registration_info.member_id = members.id
@@ -55,6 +55,7 @@ $result2 = $stmt2->get_result();
 if ($result->num_rows > 0) {
 $row = $result->fetch_assoc();
 $expiryDate = $row['end_date'];
+$memberID = $row['member_id'];
 $firstName = $row['firstname'] ?? 'Unknown';
 $middleName = $row['middlename'] ?? ''; // If no middle name, default to empty string
 $lastName = $row['lastname'] ?? 'Unknown';
@@ -64,12 +65,14 @@ $fullName = "$firstName $middleName $lastName"; // Concatenate the name
 echo json_encode([
     "valid" => true, 
     "expiry" => $expiryDate, 
-    "name" => $fullName
+    "name" => $fullName,
+    "id" => $memberID
 ]);
 } 
 elseif ($result2->num_rows > 0){
 $row = $result2->fetch_assoc();
 $expiryDate = $row['end_date'];
+$memberID = $row['member_id'];
 $firstName = $row['firstname'] ?? 'Unknown';
 $middleName = $row['middlename'] ?? ''; // If no middle name, default to empty string
 $lastName = $row['lastname'] ?? 'Unknown';
@@ -78,7 +81,8 @@ $fullName = "$firstName $middleName $lastName"; // Concatenate the name
 echo json_encode([
     "valid" => false, 
     "expiry" => $expiryDate, 
-    "name" => $fullName
+    "name" => $fullName,
+    "id" => $memberID
     ]);
 }else {
 // No valid memberships found

@@ -91,6 +91,153 @@
         </div>
     </div>
 </div>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Scanner</title>
+    <script src="html5-qrcode.min.js"></script>
+    <link rel="stylesheet" href="qr-style.css" />
+  </head>
+  <body id="qr-scanner">
+    <div id="scan">
+    <div id="notif"></div>
+    <h2>Check Valid Member</h2>
+    <div id="reader"></div>
+    <div id="result"></div>
+    <button id="startBtn">Start Scanning</button>
+    </div>
+
+    <script>
+      let html5QrCode = new Html5Qrcode("reader"); // Initialize outside for scope
+      let isScanning = false;
+
+      // Start scanning
+      function startScanning() {
+        if (!isScanning) {
+          // Dynamically set qrbox size to match the video feed aspect ratio
+          let aspectRatio = 600 / 400; // Example: adjust to match your camera feed ratio
+          let qrboxSize = {
+            width: 300, // Set this value based on your requirements
+            height: 500 / aspectRatio, // Ensuring it matches the aspect ratio of the video feed
+          };
+          html5QrCode
+            .start(
+              { facingMode: "environment" }, // Use the environment camera
+              {
+                fps: 10, // Frames per second
+                qrbox: qrboxSize, // Set the scanning box size
+              },
+              qrCodeSuccessCallback,
+              (errorMessage) => {
+                // Handle scanning errors
+                console.warn(`QR code scan error: ${errorMessage}`);
+                document.getElementById("result").innerText = "Scanning.....";
+              }
+            )
+            .then(() => {
+              isScanning = true;
+              console.log("Scanning started...");
+            })
+            .catch((err) => {
+              console.error("Failed to start scanning:", err);
+              alert(
+                "Error starting the scanner. Please check camera permissions."
+              );
+            });
+        }
+      }
+
+      // Stop scanning
+      function stopScanning() {
+        if (isScanning) {
+          html5QrCode
+            .stop()
+            .then(() => {
+              isScanning = false;
+              console.log("Scanning stopped.");
+              document.getElementById("result").innerText = "Scanning stopped.";
+            })
+            .catch((err) => {
+              console.error("Failed to stop scanning:", err);
+              alert("Error stopping the scanner.");
+            });
+        }
+      }
+
+      // Handle QR code success
+      const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+        document.getElementById(
+          "result"
+        ).innerText = `QR Code scanned: ${decodedText}`;
+        validateMembership(decodedText); // Call your validation logic
+      };
+      function notif(data) {
+        var notif = document.getElementById("reader");
+        var formdata = new FormData();
+        formdata.append("notif", data);
+        fetch("noti.php", {
+          method: "POST",
+          body: formdata,
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            notif.innerHTML = data;
+          });
+        return false;
+      }
+
+      function notifred(data) {
+        var notif = document.getElementById("reader");
+        var formdata = new FormData();
+        formdata.append("notif", data);
+        fetch("noti-red.php", {
+          method: "POST",
+          body: formdata,
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            notif.innerHTML = data;
+          });
+        return false;
+      }
+
+      // Validate membership
+      function validateMembership(memberId) {
+        fetch(`validate.php?memberId=${memberId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.valid) {
+              // Show both the member's name and the expiry date
+              notif("Membership Valid");
+              document.getElementById(
+                "result"
+              ).innerText = `Member: ${data.name}\n Expiry Date: ${data.expiry}\n Member ID: ${data.memberId}`;
+            } else {
+              notifred("Membership Expired");
+              document.getElementById(
+                "result"
+              ).innerText = `Member: ${data.name}\n Expiry Date: ${data.expiry}\n Member ID: ${data.memberId}`;
+            }
+          })
+          .catch((error) => {
+            console.error("Error during validation:", error);
+            notif("member not found");
+          });
+
+        stopScanning();
+      }
+
+      // Add event listeners for start and stop buttons
+      document
+        .getElementById("startBtn")
+        .addEventListener("click", startScanning);
+    </script>
+  </body>
+</html>
+
 <script>
 	$('#manage-records').submit(function(e){
         e.preventDefault()
