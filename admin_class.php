@@ -21,10 +21,10 @@ Class Action {
 			$qry = $this->db->query("SELECT * FROM users where username = '".$username."' and password = '".md5($password)."' ");
 			if($qry->num_rows > 0){
 				foreach ($qry->fetch_array() as $key => $value) {
-					if($key != 'passwors' && !is_numeric($key))
+					if($key != 'password' && !is_numeric($key))
 						$_SESSION['login_'.$key] = $value;
 				}
-				if($_SESSION['login_type'] != 1){
+				if($_SESSION['login_type'] != 1 && $_SESSION['login_type'] != 2){
 					foreach ($_SESSION as $key => $value) {
 						unset($_SESSION[$key]);
 					}
@@ -44,7 +44,7 @@ Class Action {
 		$qry = $this->db->query("SELECT * FROM users where username = '".$username."' and password = '".md5($password)."' ");
 		if($qry->num_rows > 0){
 			foreach ($qry->fetch_array() as $key => $value) {
-				if($key != 'passwors' && !is_numeric($key))
+				if($key != 'password' && !is_numeric($key))
 					$_SESSION['login_'.$key] = $value;
 			}
 			if($_SESSION['login_alumnus_id'] > 0){
@@ -82,29 +82,28 @@ Class Action {
 		}
 		header("location:../index.php");
 	}
-
 	function save_user(){
 		extract($_POST);
-		$data = " name = '$name' ";
-		$data .= ", username = '$username' ";
-		if(!empty($password))
-		$data .= ", password = '".md5($password)."' ";
-		$data .= ", type = '$type' ";
-		if($type == 1)
-			$establishment_id = 0;
-		$data .= ", establishment_id = '$establishment_id' ";
-		$chk = $this->db->query("Select * from users where username = '$username' and id !='$id' ")->num_rows;
-		if($chk > 0){
+		$data = "name = '$name', username = '$username'";
+		if (!empty($password)) {
+			$data .= ", password = '".md5($password)."'";
+		}
+		$data .= ", type = '$type'";
+		// Check for existing username
+		$chk = $this->db->query("SELECT * FROM users WHERE username = '$username' AND id != '$id'")->num_rows;
+		if ($chk > 0) {
 			return 2;
-			exit;
 		}
-		if(empty($id)){
-			$save = $this->db->query("INSERT INTO users set ".$data);
-		}else{
-			$save = $this->db->query("UPDATE users set ".$data." where id = ".$id);
+		// Insert or update user record
+		if (empty($id)) {
+			$save = $this->db->query("INSERT INTO users SET $data");
+		} else {
+			$save = $this->db->query("UPDATE users SET $data WHERE id = $id");
 		}
-		if($save){
+		if ($save) {
 			return 1;
+		} else {
+			return 0; 
 		}
 	}
 	function delete_user(){
@@ -288,7 +287,7 @@ Class Action {
 		$data = '';
 		foreach($_POST as $k=> $v){
 			if(!empty($v)){
-				if(!in_array($k,array('id','plan_id','package_id','trainee_id'))){
+				if(!in_array($k,array('id','plan_id','package_id','trainer_id'))){
 					if(empty($data))
 					$data .= " $k='{$v}' ";
 					else
@@ -318,6 +317,10 @@ Class Action {
 				}
 			}
 			$save = $this->db->query("INSERT INTO members set $data ");
+			if(!$save) {
+				echo "Error: " . $this->db->error;  // Debug output
+				return;
+			}
 			if($save){
 				$member_id = $this->db->insert_id;
 				$data = " member_id ='$member_id' ";
@@ -346,9 +349,13 @@ Class Action {
 	}
 	function delete_member(){
 		extract($_POST);
-		$delete = $this->db->query("DELETE FROM faculty where id = ".$id);
+		$delete = $this->db->query("DELETE FROM members where id = ".$id);
 		if($delete){
 			return 1;
+		}
+		if(!$delete) {
+			echo "Error: " . $this->db->error;  // Debug output
+			return;
 		}
 	}
 	function save_schedule(){

@@ -114,7 +114,9 @@ if(isset($_GET['id'])){
 				}else if(resp == 2){
 					$('#msg').html('<div class="alert alert-danger">ID No already existed.</div>')
 					end_load();
-				}
+				}else {
+					alert("Error: " + resp);}
+				
 			}
 		})
 	})

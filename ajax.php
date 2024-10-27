@@ -83,8 +83,10 @@ if($action == "delete_trainer"){
 }
 if($action == "save_member"){
 	$save = $crud->save_member();
-	if($save)
-		echo $save;
+	if($save){
+		echo $save;}
+	else {
+		echo "Error Saving Member";}
 }
 if($action == "delete_member"){
 	$save = $crud->delete_member();
