@@ -46,6 +46,7 @@ header("location:index.php?page=home");
 		background:white;
 		display: flex;
 		align-items: center;
+		
 	}
 	#login-left{
 		position: absolute;
@@ -61,7 +62,13 @@ header("location:index.php?page=home");
 	}
 	#login-right .card{
 		margin: auto;
-		z-index: 1
+		z-index: 1;
+		border-radius: 20px;
+		height: 450px;
+		background-color: whitesmoke;
+		backdrop-filter: blur(10px); /* Adds the blur effect */
+    	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+		
 	}
 	.logo {
     margin: auto;
@@ -79,7 +86,7 @@ div#login-right::before {
     left: 0;
     width: calc(100%);
     height: calc(100%);
-    background: #000000e0;
+	background: linear-gradient(to left, #000000, #ffffff);
 
 	
 }
@@ -87,6 +94,32 @@ div#login-right::before {
 		width: 100%;
 		height: 100%;
 	}
+input::placeholder {
+    text-align: center;
+}
+#btn-login{
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+    backdrop-filter: blur(10px); /* Adds the blur effect */
+    z-index: 1; 
+	width: 150px;
+	margin-top: 30px;
+	font-weight: bold;
+	border: none;
+	height: 40px;
+	background-color: black;
+	transition: all 500ms;
+}
+#btn-login:hover{
+	border: 1px solid;
+	border-color: black;
+	border-radius: 20px;
+	color: black;
+	background-color: white;
+	letter-spacing: 2px;
+}
+#login-form{
+	margin-top: 40px;
+}
 
 </style>
 
@@ -95,23 +128,23 @@ div#login-right::before {
 
   <main id="main" class=" bg-dark">
   		<div id="login-left">
-			<img class="cover-photo" src="bk.jpg" alt="error">
+			<img class="cover-photo" src="motiv.jpg" alt="error">
   		</div>
 
   		<div id="login-right">
   			<div class="card col-md-8">
-  				<div class="card-body">
-  						
+  				<div class="card-body" id="card-body">
   					<form id="login-form" >
+					  <div id="user-txt" style="height: 20px;"><center><h1>User Login</h1></center></div><br><br><br>
   						<div class="form-group">
   							<label for="username" class="control-label">Username</label>
-  							<input type="text" id="username" name="username" class="form-control">
+  							<input type="text" id="username" name="username" class="form-control" placeholder="Enter Username">
   						</div>
   						<div class="form-group">
   							<label for="password" class="control-label">Password</label>
-  							<input type="password" id="password" name="password" class="form-control">
+  							<input type="password" id="password" name="password" class="form-control" placeholder="Enter Password">
   						</div>
-  						<center><button class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button></center>
+  						<center><button id="btn-login" class="btn-sm btn-block btn-wave col-md-4 btn-primary" style="max-width: 700px !important">Login</button></center>
   					</form>
   				</div>
   			</div>
@@ -143,7 +176,7 @@ div#login-right::before {
 				if(resp == 1){
 					location.href ='index.php?page=home';
 				}else{
-					$('#login-form').prepend('<div class="alert alert-danger">Username or password is incorrect.</div>')
+					$('#login-form').prepend('<div style="position:absolute;" class="alert alert-danger">Username or password is incorrect.</div>')
 					$('#login-form button[type="button"]').removeAttr('disabled').html('Login');
 				}
 			}
