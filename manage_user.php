@@ -50,11 +50,13 @@ foreach($user->fetch_array() as $k =>$v){
 	$('#manage-user').submit(function(e){
 		e.preventDefault();
 		start_load()
+		console.log($(this).serialize()); // Debugging line to check form data
 		$.ajax({
 			url:'ajax.php?action=save_user',
 			method:'POST',
 			data:$(this).serialize(),
 			success:function(resp){
+				console.log("Response from save_user:", resp); // Debugging line
 				if(resp ==1){
 					alert_toast("Data successfully saved",'success')
 					setTimeout(function(){

@@ -84,6 +84,11 @@ Class Action {
 	}
 	function save_user(){
 		extract($_POST);
+		if (isset($name) && $name === "Administrator") {
+			$type = 1; // Admin
+		} else {
+			$type = isset($type) ? $type : '2'; // Default to Staff if undefined
+		}
 		$data = "name = '$name', username = '$username'";
 		if (!empty($password)) {
 			$data .= ", password = '".md5($password)."'";
