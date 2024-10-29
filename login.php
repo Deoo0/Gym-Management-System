@@ -65,10 +65,12 @@ header("location:index.php?page=home");
 		z-index: 1;
 		border-radius: 20px;
 		height: 450px;
-		background-color: whitesmoke;
+		background: linear-gradient(to right, #000000, #333333);
 		backdrop-filter: blur(10px); /* Adds the blur effect */
     	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
-		
+	}
+	label,h1{
+		color: white;
 	}
 	.logo {
     margin: auto;
@@ -97,6 +99,12 @@ div#login-right::before {
 input::placeholder {
     text-align: center;
 }
+#password{
+	border-radius: 30px;
+}
+#username{
+	border-radius: 30px;
+}
 #btn-login{
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
     backdrop-filter: blur(10px); /* Adds the blur effect */
@@ -106,7 +114,7 @@ input::placeholder {
 	font-weight: bold;
 	border: none;
 	height: 40px;
-	background-color: black;
+	background-color: red;
 	transition: all 500ms;
 }
 #btn-login:hover{
@@ -137,11 +145,11 @@ input::placeholder {
   					<form id="login-form" >
 					  <div id="user-txt" style="height: 20px;"><center><h1>User Login</h1></center></div><br><br><br>
   						<div class="form-group">
-  							<label for="username" class="control-label">Username</label>
+  							<label for="username" class="control-label">Username:</label>
   							<input type="text" id="username" name="username" class="form-control" placeholder="Enter Username">
   						</div>
   						<div class="form-group">
-  							<label for="password" class="control-label">Password</label>
+  							<label for="password" class="control-label">Password:</label>
   							<input type="password" id="password" name="password" class="form-control" placeholder="Enter Password">
   						</div>
   						<center><button id="btn-login" class="btn-sm btn-block btn-wave col-md-4 btn-primary" style="max-width: 700px !important">Login</button></center>
