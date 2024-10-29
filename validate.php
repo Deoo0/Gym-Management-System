@@ -22,7 +22,7 @@ SELECT registration_info.end_date, registration_info.date_created, registration_
 members.firstname, members.middlename, members.lastname
 FROM registration_info
 JOIN members ON registration_info.member_id = members.id
-WHERE registration_info.member_id = ? 
+WHERE members.member_id = ? 
 AND registration_info.status = 1
 AND registration_info.end_date > NOW()
 ORDER BY registration_info.end_date DESC
@@ -34,7 +34,7 @@ SELECT registration_info.end_date, registration_info.date_created, registration_
 members.firstname, members.middlename, members.lastname
 FROM registration_info
 JOIN members ON registration_info.member_id = members.id
-WHERE registration_info.member_id = ? 
+WHERE members.member_id = ? 
 AND registration_info.status = 1
 AND registration_info.end_date < NOW()
 ORDER BY registration_info.end_date DESC
