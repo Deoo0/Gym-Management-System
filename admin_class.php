@@ -1,4 +1,5 @@
 <?php
+use QRcode;
 session_start();
 ini_set('display_errors', 1);
 Class Action {
@@ -349,8 +350,21 @@ Class Action {
 			}
 			$save = $this->db->query("UPDATE members set $data where id=".$id);
 		}
-		if($save)
+		if($save)	
+			$this->generate_qr_code($rand);
 			return 1;
+	}
+	function generate_qr_code($member_id) {
+		// Include the PHP QR Code library
+		include('/opt/lampp/htdocs/gym-management-system/gym/phpqrcode/phpqrcode/qrlib.php'); // Adjust the path as needed
+	
+		// Generate the QR code with the member ID	
+		$qrContent = $member_id ;
+		$qrFilePath = '/opt/lampp/htdocs/gym-management-system/gym/qr_codes/' . $member_id . '.png'; // Full path to save QR code
+	
+		// Generate and save the QR code as a PNG image
+		QRcode::png($qrContent, $qrFilePath, QR_ECLEVEL_L, 40);
+		return $qrFilePath;
 	}
 	function delete_member(){
 		extract($_POST);
