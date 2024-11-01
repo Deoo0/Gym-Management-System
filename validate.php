@@ -77,7 +77,7 @@ $firstName = $row['firstname'] ?? 'Unknown';
 $middleName = $row['middlename'] ?? ''; // If no middle name, default to empty string
 $lastName = $row['lastname'] ?? 'Unknown';
 $fullName = "$firstName $middleName $lastName"; // Concatenate the name
-// Return the valid membership
+// Return the expired membership
 echo json_encode([
     "valid" => false, 
     "expiry" => $expiryDate, 
@@ -87,7 +87,7 @@ echo json_encode([
 }else {
 // No valid memberships found
 echo json_encode([
-    "valid" => false, 
+    "valid" => false,
     "message" => "No valid membership found."
 ]);
 }
