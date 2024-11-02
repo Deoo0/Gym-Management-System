@@ -33,11 +33,6 @@ header("location:index.php?page=home");
 	    height: calc(100%);
 	    /*background: #007bff;*/
 	}
-	main#main{
-		width:100%;
-		height: calc(100%);
-		background:white;
-	}
 	#login-right{
 		position: absolute;
 		right:0;
@@ -134,7 +129,7 @@ input::placeholder {
 <body>
 
 
-  <main id="main" class=" bg-dark">
+
   		<div id="login-left">
 			<img class="cover-photo" src="motiv.jpg" alt="error">
   		</div>
@@ -159,7 +154,7 @@ input::placeholder {
   		</div>
    
 
-  </main>
+
 
   <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 
