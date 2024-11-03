@@ -351,7 +351,7 @@ Class Action {
 			$save = $this->db->query("UPDATE members set $data where id=".$id);
 		}
 		if($save)	
-			$this->generate_qr_code($rand);
+			$this->generate_custom_qr_code($rand);
 			return 1;
 	}
 	function generate_qr_code($member_id) {
@@ -366,6 +366,63 @@ Class Action {
 		QRcode::png($qrContent, $qrFilePath, QR_ECLEVEL_L, 40);
 		return $qrFilePath;
 	}
+	function generate_custom_qr_code($member_id) {
+		// Include the PHP QR Code library
+		include('/opt/lampp/htdocs/gym-management-system/gym/phpqrcode/phpqrcode/qrlib.php'); // Adjust the path as needed
+	
+		$qrContent = $member_id;
+		$qrFilePath = '/opt/lampp/htdocs/gym-management-system/gym/qr_codes/' . $member_id . '.png'; // Full path to save QR code
+	
+		// Generate the QR code as PNG
+		QRcode::png($qrContent, $qrFilePath, QR_ECLEVEL_Q, 40);
+
+		// Load the generated QR code image
+		$qrImage = imagecreatefrompng($qrFilePath);
+	
+		// Load the logo and resize it
+		$logoPath = '/opt/lampp/htdocs/gym-management-system/gym/images/logo.png'; // Path to your logo
+		$logoImage = imagecreatefrompng($logoPath);
+	
+		$qrWidth = imagesx($qrImage);
+		$logoSize = $qrWidth * 0.2; // Set logo size to 20% of QR code size
+		$logoResized = imagecreatetruecolor($logoSize, $logoSize);
+	
+		// Enable transparency for the resized logo
+		imagesavealpha($logoResized, true);
+		$transparentColor = imagecolorallocatealpha($logoResized, 0, 0, 0, 127);
+		imagefill($logoResized, 0, 0, $transparentColor);
+	
+		// Resize the logo image
+		imagecopyresampled($logoResized, $logoImage, 0, 0, 0, 0, $logoSize, $logoSize, imagesx($logoImage), imagesy($logoImage));
+	
+		// Apply rounded corners to the logo
+		$radius = $logoSize / 2; // Radius for the rounded effect
+		for ($x = 0; $x < $logoSize; $x++) {
+			for ($y = 0; $y < $logoSize; $y++) {
+				// Calculate distance from the center
+				$distance = sqrt(pow($x - $radius, 2) + pow($y - $radius, 2));
+				if ($distance > $radius) {
+					imagesetpixel($logoResized, $x, $y, $transparentColor); // Set pixel to transparent if outside radius
+				}
+			}
+		}
+	
+		// Overlay the rounded logo onto the QR code
+		$logoX = ($qrWidth / 2) - ($logoSize / 2);
+		$logoY = ($qrWidth / 2) - ($logoSize / 2);
+		imagecopy($qrImage, $logoResized, $logoX, $logoY, 0, 0, $logoSize, $logoSize);
+	
+		// Save the final image with the logo
+		imagepng($qrImage, $qrFilePath);
+	
+		// Clean up memory
+		imagedestroy($qrImage);
+		imagedestroy($logoImage);
+		imagedestroy($logoResized);
+	
+		return $qrFilePath;
+	}
+	
 	function delete_member(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM members where id = ".$id);
