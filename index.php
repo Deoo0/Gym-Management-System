@@ -5,7 +5,8 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+  <script type="text/javascript" src="main.js" ></script>
+  <link rel="stylesheet" href="assets/css/style.css">
   <title>Gym Management System</title>
  	
 

@@ -1,3 +1,20 @@
+function notif(data){
+  var notification = document.getElementById("notification");
+  var formdata = new FormData();
+  formdata.append("notif",data);
+  fetch("notif_main.php",{
+    method: "POST",
+    body: formdata,
+  })
+    .then((response) => response.text())
+    .then((showdata)=>{
+      notification.innerHTML = showdata;
+    })
+}
+function closeNotif(){
+  var notification = document.getElementById("notification");
+  notification.innerHTML="";
+}
 function startScanning() {
     document
     .getElementById("startBtn")

@@ -1730,3 +1730,63 @@ span.select2-selection.select2-selection--single {
 span.select2-selection__arrow {
     top: .3rem !important;
 }
+
+/*Notification Design*/
+#notif-container{
+  background-color: rgba(247, 1, 255, 0.5);
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  text-align: center; 
+  place-content: center;
+  backdrop-filter: blur(5px);
+}
+@keyframes zoom {
+  0%{
+      height: 0vh;
+      width: 0vw;
+  }
+  100%{
+      height: 25vh;
+      width: 25vh;
+  }
+  
+}
+#notif-form{
+  background-color: rgba(255, 255, 255, 0.5);
+  height: 25vh;
+  width: 25vw;
+  border-radius: 1em;
+  padding: 25px;
+  animation: zoom 0.4s;
+}
+#notif-login{
+  color: white;
+  width: 3vw;
+  height: 3vh;
+  border-radius: 5em;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  margin-right: 0;
+  transition: all 100ms;
+  box-shadow: black;
+}
+#notif-login:hover{
+  background-color: red;
+  color: black ;
+
+}
+@keyframes opacity {
+  0%{
+      opacity: 0;
+  }
+  50%{
+      opacity: 0;
+  }
+  100%{
+      opacity: 1;
+  }
+}
+#notif-item{
+  animation: opacity 1s;
+}
