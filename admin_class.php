@@ -426,7 +426,8 @@ Class Action {
 	function delete_member(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM members where id = ".$id);
-		if($delete){
+		$infoDel = $this->db->query("UPDATE registration_info SET status = 0 WHERE member_id = ".$id);
+		if($delete && $infoDel){
 			return 1;
 		}
 		if(!$delete) {
