@@ -104,3 +104,14 @@ function notifred(data) {
     stopScanning();
   }
 
+  function showPic(){
+    let picfile = document.getElementById('pic-file');
+    let imgdisplay = document.getElementById('image-display');
+    let filepic = picfile.files[0];
+    let reader = new FileReader();
+    reader.onload = function(actiondisplay){
+      imgdisplay.src = actiondisplay.target.result;
+    }
+    reader.readAsDataURL(filepic);
+    return false;
+  }

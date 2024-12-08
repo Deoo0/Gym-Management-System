@@ -8,17 +8,37 @@ if(isset($_GET['id'])){
 }
 
 ?>
+
+<style>
+	#image-display{
+		height: 200px;
+		width: 200px;
+	}
+	#pic-file{
+		font-size: 14px;
+	}
+
+</style>
 <div class="container-fluid">
-	<form action="" id="manage-member">
+	<form action="" id="manage-member"  method="POST" enctype="multipart/form-data">
 		<div id="msg"></div>
 				<input type="hidden" name="id" value="<?php echo isset($_GET['id']) ? $_GET['id']:'' ?>" class="form-control">
-		<div class="row form-group">
+		<!--<div class="row form-group">
 			<div class="col-md-4">
 						<label class="control-label">ID No.</label>
 						<input type="text" name="member_id" class="form-control" value="<?php echo isset($member_id) ? $member_id:'' ?>" >
 						<small><i>Leave this blank if you want to a auto generate ID no.</i></small>
 					</div>
-		</div>
+		</div>-->
+
+		<center>
+		<label for="pic-file">
+			<img src="default.jpg" alt="" id="image-display">
+		</label><br>
+		<input type="file" id="pic-file" name="pic-file"  style="width: 200px;" onchange="return showPic()">
+		</center>
+
+
 		<div class="row form-group">
 			<div class="col-md-4">
 				<label class="control-label">Last Name</label>
@@ -98,26 +118,49 @@ if(isset($_GET['id'])){
 </div>
 
 <script>
-	$('#manage-member').submit(function(e){
-		e.preventDefault()
-		start_load()
-		$.ajax({
-			url:'ajax.php?action=save_member',
-			method:'POST',
-			data:$(this).serialize(),
-			success:function(resp){
-				if(resp == 1){
-					alert_toast("Data successfully saved.",'success')
-					setTimeout(function(){
-						location.reload()
-					},1000)
-				}else if(resp == 2){
-					$('#msg').html('<div class="alert alert-danger">ID No already existed.</div>')
-					end_load();
-				}else {
-					alert("Error: " + resp);}
-				
-			}
-		})
-	})
+	$('#manage-member').submit(function(e) {
+    e.preventDefault(); // Prevent the default form submission
+    start_load(); // Optional: Show a loading spinner or message
+
+    // Create a FormData object to include both text inputs and files
+    let formData = new FormData(this);
+
+    $.ajax({
+        url: 'ajax.php?action=save_member', // The server-side script
+        method: 'POST',
+        data: formData,
+        contentType: false, // Important: Do not process or set content-type for FormData
+        processData: false, // Prevent jQuery from processing data
+        success: function(resp) {
+            if (resp == 1) {
+                alert_toast("Data successfully saved.", 'success');
+                setTimeout(function() {
+                    location.reload(); // Reload the page
+                }, 1000);
+            } else if (resp == 2) {
+                $('#msg').html('<div class="alert alert-danger">ID No already existed.</div>');
+                end_load();
+            } else {
+                alert("Error: " + resp);
+            }
+        },
+        error: function(err) {
+            console.log(err);
+            alert("An error occurred. Please try again.");
+        }
+    });
+});
+
+
+	function showPic(){
+    let picfile = document.getElementById('pic-file');
+    let imgdisplay = document.getElementById('image-display');
+    let filepic = picfile.files[0];
+    let reader = new FileReader();
+    reader.onload = function(actiondisplay){
+      imgdisplay.src = actiondisplay.target.result;
+    }
+    reader.readAsDataURL(filepic);
+    return false;
+  }
 </script>

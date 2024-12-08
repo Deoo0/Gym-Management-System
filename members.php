@@ -104,8 +104,8 @@
 		margin: unset
 	}
 	img{
-		max-width:100px;
-		max-height: 150px;
+		max-width:200px;
+		max-height: 200px;
 	}
 </style>
 <script>
