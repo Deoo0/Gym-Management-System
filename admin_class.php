@@ -288,104 +288,72 @@ Class Action {
 			return 1;
 		}
 	}
-	function save_member() {
+	function save_member(){
 		extract($_POST);
 		$data = '';
-	
-		// Collect POST data for other fields
-		foreach ($_POST as $k => $v) {
-			if (!empty($v)) {
-				if (!in_array($k, array('id', 'plan_id', 'package_id', 'trainer_id'))) {
-					if (empty($data)) {
-						$data .= " $k='{$v}' ";
-					} else {
-						$data .= ", $k='{$v}' ";
+		foreach($_POST as $k=> $v){
+			if(!empty($v)){
+				if(!in_array($k,array('id','plan_id','package_id','trainer_id'))){
+					if(empty($data))
+					$data .= " $k='{$v}' ";
+					else
+					$data .= ", $k='{$v}' ";
+				}
+			}
+		}
+			if(empty($member_id)){
+				$i = 1;
+				while($i == 1){
+					$rand = mt_rand(1,99999999);
+					$rand =sprintf("%'08d",$rand);
+					$chk = $this->db->query("SELECT * FROM members where member_id = '$rand' ")->num_rows;
+					if($chk <= 0){
+						$data .= ", member_id='$rand' ";
+						$i = 0;
 					}
 				}
 			}
-		}
-	
-		// Handle image upload
-		if (isset($_FILES['pic-file']) && $_FILES['pic-file']['error'] == UPLOAD_ERR_OK) {
-			$upload_dir = 'uploads/';
-			$file_name = basename($_FILES['pic-file']['name']);
-			$file_path = $upload_dir . $file_name;
-		
-			// Ensure the upload directory exists
-			if (!is_dir($upload_dir)) {
-				mkdir($upload_dir, 0777, true);
-			}
-		
-			// Move the uploaded file to the upload directory
-			if (move_uploaded_file($_FILES['pic-file']['tmp_name'], $file_path)) {
-				$data .= ", picture='$file_name'"; // Include the filename in the database
-			} else {
-				echo "Error uploading the file.";
-				exit;
-			}
-		}
-		// Generate a unique member ID if not provided
-		if (empty($member_id)) {
-			$i = 1;
-			while ($i == 1) {
-				$rand = mt_rand(1, 99999999);
-				$rand = sprintf("%'08d", $rand);
-				$chk = $this->db->query("SELECT * FROM members WHERE member_id = '$rand' ")->num_rows;
-				if ($chk <= 0) {
-					$data .= ", member_id='$rand' ";
-					$i = 0;
-				}
-			}
-		}
-	
-		// Insert or update member information
-		if (empty($id)) {
-			// Check for duplicate member ID and handle insertion
-			if (!empty($member_id)) {
-				$chk = $this->db->query("SELECT * FROM members WHERE member_id = '$member_id' ")->num_rows;
-				if ($chk > 0) {
+
+		if(empty($id)){
+			if(!empty($member_id)){
+				$chk = $this->db->query("SELECT * FROM members where member_id = '$member_id' ")->num_rows;
+				if($chk > 0){
 					return 2;
 					exit;
 				}
 			}
-			$save = $this->db->query("INSERT INTO members SET $data");
-			if (!$save) {
+			$save = $this->db->query("INSERT INTO members set $data ");
+			if(!$save) {
 				echo "Error: " . $this->db->error;  // Debug output
 				return;
 			}
-			if ($save) {
+			if($save){
 				$member_id = $this->db->insert_id;
 				$data = " member_id ='$member_id' ";
 				$data .= ", plan_id ='$plan_id' ";
 				$data .= ", package_id ='$package_id' ";
 				$data .= ", trainer_id ='$trainer_id' ";
 				$data .= ", start_date ='".date("Y-m-d")."' ";
-				$plan = $this->db->query("SELECT * FROM plans WHERE id = $plan_id")->fetch_array()['plan'];
-				$data .= ", end_date ='".date("Y-m-d", strtotime(date('Y-m-d') . ' +' . $plan . ' months')) . "' ";
-				$save = $this->db->query("INSERT INTO registration_info SET $data");
-				if (!$save)
-					$this->db->query("DELETE FROM members WHERE id = $member_id");
+				$plan = $this->db->query("SELECT * FROM plans where id = $plan_id")->fetch_array()['plan'];
+				$data .= ", end_date ='".date("Y-m-d",strtotime(date('Y-m-d').' +'.$plan.' months'))."' ";
+				$save = $this->db->query("INSERT INTO registration_info set $data");
+				if(!$save)
+					$this->db->query("DELETE FROM members where id = $member_id");
 			}
-		} else {
-			// Handle update for existing member
-			if (!empty($member_id)) {
-				$chk = $this->db->query("SELECT * FROM members WHERE member_id = '$member_id' AND id != $id ")->num_rows;
-				if ($chk > 0) {
+		}else{
+			if(!empty($member_id)){
+				$chk = $this->db->query("SELECT * FROM members where member_id = '$member_id' and id != $id ")->num_rows;
+				if($chk > 0){
 					return 2;
 					exit;
 				}
 			}
-			$save = $this->db->query("UPDATE members SET $data WHERE id=" . $id);
+			$save = $this->db->query("UPDATE members set $data where id=".$id);
 		}
-	
-		if ($save) {
+		if($save)	
 			$this->generate_custom_qr_code($rand);
 			return 1;
-		}
 	}
-	
-	
-	
 	function generate_custom_qr_code($member_id) {
 		// Include the PHP QR Code library
 		include('/opt/lampp/htdocs/gym-management-system/gym/phpqrcode/phpqrcode/qrlib.php'); // Adjust the path as needed

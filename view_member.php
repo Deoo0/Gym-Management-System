@@ -16,8 +16,15 @@ if(isset($_GET['id'])){
 			<p>Email: </i> <b><?php echo $email ?></b></p>
 			<p>Contact: </i> <b><?php echo $contact ?></b></p>
 			<p>Address: </i> <b><?php echo $address ?></b></p>
-			<!--<p>QR-Code: <br><img src="qr_codes/17415618.png" alt="qr"></p> TO DO NEED TO ADD QR CODE IN DATABASE--> 
-		</div>
+			<!--<p>QR-Code: <br><img src="qr_codes/17415618.png" alt="qr"></p> TO DO NEED TO ADD QR CODE IN DATABASE-->
+			<!--DISPLAY THE PHOTO HERE--> 
+			<p>Photo:</p>
+			<?php if (!empty($picture)): ?>
+				<img src="uploads/<?php echo $picture ?>" alt="Member Photo" class="img-thumbnail" style="max-width: 200px;"><br>
+			<?php else: ?>
+				<p>No photo available.</p>
+			<?php endif; ?>
+		</div> 
 		<div class="col-md-8">
 			<large><b>Membership Plan List</b></large>
 			<table class="table table-condensed">
