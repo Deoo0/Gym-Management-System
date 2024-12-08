@@ -35,7 +35,7 @@ if(isset($_GET['id'])){
 		<label for="pic-file">
 			<img src="default.jpg" alt="" id="image-display">
 		</label><br>
-		<input type="file" id="pic-file" name="pic-file"  style="width: 200px;" onchange="return showPic()">
+		<input type="file" id="pic-file" name="pic-file"  style="display:none; width: 200px;" onchange="return showPic()">
 		</center>
 
 
